@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskNest — Project Management</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="authScreen" class="auth-wrap">
+    <section class="auth-card">
+      <div class="brand-mark">TN</div>
+      <p class="eyebrow">TEAM WORKSPACE</p>
+      <h1>Make teamwork <span>flow.</span></h1>
+      <p class="muted">
+        Plan projects, organize tasks, and keep everyone in sync.
+      </p>
+
+      <div class="tabs">
+        <button id="loginTab" class="tab active">Log in</button>
+        <button id="registerTab" class="tab">Create account</button>
+      </div>
+
+      <form id="authForm">
+        <label id="nameLabel" class="hidden">
+          Full name
+          <input id="nameInput" autocomplete="name">
+        </label>
+        <label>
+          Email address
+          <input id="emailInput" type="email" required
+                 autocomplete="email" placeholder="you@example.com">
+        </label>
+        <label>
+          Password
+          <input id="passwordInput" type="password" required
+                 minlength="6" placeholder="At least 6 characters">
+        </label>
+        <button class="primary wide" type="submit" id="authSubmit">
+          Log in
+        </button>
+      </form>
+      <p id="authMessage" class="message" role="status"></p>
+    </section>
+
+    <aside class="auth-art">
+      <div class="art-circle"></div>
+      <div class="art-content">
+        <span class="pill">✦ Your team's space</span>
+        <h2>Good work happens<br>when work is clear.</h2>
+        <div class="mini-task">
+          <span class="dot purple"></span>
+          <div>
+            <b>Design homepage</b>
+            <small>Product launch · Today</small>
+          </div>
+          <span class="check">✓</span>
+        </div>
+        <div class="mini-task">
+          <span class="dot green"></span>
+          <div>
+            <b>Review sprint tasks</b>
+            <small>Website refresh · Tomorrow</small>
+          </div>
+          <span class="check">✓</span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="appScreen" class="app hidden">
+    <aside class="sidebar">
+      <a class="logo" href="#">
+        <span class="brand-mark small">TN</span>
+        <span>TaskNest</span>
+      </a>
+
+      <div class="side-label">WORKSPACE</div>
+      <button class="side-link active" id="allProjectsBtn">
+        ▦ <span>All projects</span>
+      </button>
+      <button class="side-link" id="notificationsBtn">
+        ♧ <span>Notifications</span>
+        <span id="notificationCount" class="count"></span>
+      </button>
+
+      <div class="side-label project-label">
+        YOUR PROJECTS
+        <button id="newProjectSmall" aria-label="Create project">+</button>
+      </div>
+      <nav id="projectNav"></nav>
+
+      <div class="sidebar-bottom">
+        <div class="avatar" id="userAvatar">U</div>
+        <div class="user-mini">
+          <b id="userName"></b>
+          <small id="userEmail"></small>
+        </div>
+        <button id="logoutBtn" title="Log out">↗</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow" id="pageEyebrow">OVERVIEW</p>
+          <h1 id="pageTitle">All projects</h1>
+        </div>
+        <div class="top-actions">
+          <button class="secondary" id="refreshBtn">↻ Refresh</button>
+          <button class="primary" id="newProjectBtn">＋ New project</button>
+        </div>
+      </header>
+
+      <section id="overviewPanel">
+        <div class="welcome-banner">
+          <div>
+            <span class="pill light">✦ WORKSPACE OVERVIEW</span>
+            <h2>Let's make progress.</h2>
+            <p>Small steps, great outcomes. Here's what your team is working on.</p>
+          </div>
+          <div class="banner-icon">✳</div>
+        </div>
+
+        <div class="stats">
+          <article class="stat">
+            <span class="stat-icon purple-bg">▦</span>
+            <p>Projects</p>
+            <strong id="statProjects">0</strong>
+          </article>
+          <article class="stat">
+            <span class="stat-icon blue-bg">☷</span>
+            <p>Total tasks</p>
+            <strong id="statTasks">0</strong>
+          </article>
+          <article class="stat">
+            <span class="stat-icon green-bg">✓</span>
+            <p>Completed</p>
+            <strong id="statDone">0</strong>
+          </article>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <h2>Your projects</h2>
+            <p>Pick a project to open its task board.</p>
+          </div>
+          <button class="text-button" id="newProjectText">
+            ＋ Create project
+          </button>
+        </div>
+        <div id="projectGrid" class="project-grid"></div>
+      </section>
+
+      <section id="boardPanel" class="hidden">
+        <div class="board-toolbar">
+          <div><span id="boardDescription" class="muted"></span></div>
+          <div class="board-actions">
+            <button class="secondary" id="inviteBtn">＋ Add member</button>
+            <button class="primary" id="newTaskBtn">＋ Add task</button>
+          </div>
+        </div>
+        <div id="board" class="board"></div>
+      </section>
+
+      <section id="notificationsPanel" class="hidden">
+        <div class="section-heading">
+          <div>
+            <h2>Notifications</h2>
+            <p>Recent activity from your workspace.</p>
+          </div>
+          <button id="markReadBtn" class="secondary">Mark all read</button>
+        </div>
+        <div id="notificationList" class="notification-list"></div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="projectDialog">
+    <form id="projectForm" method="dialog">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">NEW WORKSPACE</p>
+          <h2>Create a project</h2>
+        </div>
+        <button type="button" class="close" data-close="projectDialog">×</button>
+      </div>
+      <label>
+        Project name
+        <input id="projectName" required maxlength="80"
+               placeholder="e.g. Website redesign">
+      </label>
+      <label>
+        Description
+        <textarea id="projectDescription" rows="3"
+                  placeholder="What is this project about?"></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" data-close="projectDialog">Cancel</button>
+        <button class="primary" type="submit">Create project</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="taskDialog">
+    <form id="taskForm" method="dialog">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">PROJECT BOARD</p>
+          <h2>Create a task</h2>
+        </div>
+        <button type="button" class="close" data-close="taskDialog">×</button>
+      </div>
+      <label>
+        Task title
+        <input id="taskTitle" required maxlength="120"
+               placeholder="What needs to be done?">
+      </label>
+      <label>
+        Description
+        <textarea id="taskDescription" rows="3"
+                  placeholder="Add a few details..."></textarea>
+      </label>
+      <div class="form-row">
+        <label>
+          Priority
+          <select id="taskPriority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+        </label>
+        <label>
+          Assign to
+          <select id="taskAssignee">
+            <option value="">Unassigned</option>
+          </select>
+        </label>
+      </div>
+      <label>
+        Due date
+        <input id="taskDue" type="date">
+      </label>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" data-close="taskDialog">Cancel</button>
+        <button class="primary" type="submit">Add task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="memberDialog">
+    <form id="memberForm" method="dialog">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">TEAMWORK</p>
+          <h2>Add a member</h2>
+        </div>
+        <button type="button" class="close" data-close="memberDialog">×</button>
+      </div>
+      <p class="muted">They must create an account first. Enter their registered email.</p>
+      <label>
+        Member email
+        <input id="memberEmail" type="email" required
+               placeholder="teammate@example.com">
+      </label>
+      <div class="dialog-actions">
+        <button type="button" class="secondary" data-close="memberDialog">Cancel</button>
+        <button class="primary" type="submit">Add member</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="commentsDialog">
+    <div class="dialog-head">
+      <div>
+        <p class="eyebrow">TASK DISCUSSION</p>
+        <h2 id="commentsTitle">Comments</h2>
+      </div>
+      <button type="button" class="close" data-close="commentsDialog">×</button>
+    </div>
+    <div id="commentsList" class="comments-list"></div>
+    <form id="commentForm">
+      <label>
+        Add a comment
+        <textarea id="commentBody" required rows="2"
+                  placeholder="Share an update or ask a question..."></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button class="primary" type="submit">Post comment</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
